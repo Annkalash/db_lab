@@ -13,7 +13,7 @@ from enum import Enum
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-API_TOKEN = '6844609900:AAFhAGRpb73nAXzWtdjb_OXbyC60AH29g-A'
+API_TOKEN = 'your token'
 bot = Bot(token=API_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
