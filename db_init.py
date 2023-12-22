@@ -79,13 +79,7 @@ def get_cat() -> dict[str, int]:
             cur.execute("select * from get_cat()")
             result = cur.fetchall()
             return {item[0]: item[1] for item in result}
-# def get_med_cat(in_cat):
-#     with db_connect() as connect:
-#         connect.autocommit = True
-#         with connect.cursor() as cur:
-#             cur.execute("select * from get_med_cat(%s::int)",(in_cat,))
-#             result = cur.fetchone()
-#             return result
+
 def get_med_cat(in_cat):
     with db_connect() as connect:
         connect.autocommit = True
@@ -127,8 +121,9 @@ def dell_medic(name_med):
     with db_connect() as connect:
         connect.autocommit = True
         with connect.cursor() as cur:
-            cur.execute("select * FROM dell_medic(%s::varchar)",(name_med))
+            cur.execute("SELECT * FROM dell_medic(%s::varchar)", (name_med,))
             result = cur.fetchone()
+            connect.commit()
             return result[0]
 def check_medic(name_med):
     with db_connect() as connect:
