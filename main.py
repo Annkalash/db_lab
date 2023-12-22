@@ -125,8 +125,8 @@ async def show_list(message: types.Message):
 async def text_edit(message: types.Message):
     kb = [
         [types.KeyboardButton(text="Добавить новое лекарство")],
-        # [types.KeyboardButton(text="Изменить лекарство")],
-        # [types.KeyboardButton(text="Удалить лишнее лекарство")],
+        [types.KeyboardButton(text="Изменить лекарство")],
+        [types.KeyboardButton(text="Удалить лишнее лекарство")],
         [types.KeyboardButton(text="Добавить запись приема лекарства")],
         [types.KeyboardButton(text="Назад")]
     ]
@@ -193,54 +193,54 @@ async def process_enter_data(message: types.Message, state: FSMContext):
         await message.answer("Неверный формат данных. Введите данные в формате: Название, Дозировка, Категория, Количество, Инструкция")
     await state.finish()
 
-# class EditMedicineStates(StatesGroup):
-#     ENTER_NAME = State()
-#     ENTER_DATA = State()
-# @dp.message_handler(filters.Text(contains='Изменить лекарство', ignore_case=True))
-# async def edit_medicine_callback(query: types.CallbackQuery):
-#     await query.reply(text="Введите новые данные о лекарстве в следующем формате:\n"
-#                                  "Название, Дозировка, Категория, Количество, Инструкция\n"
-#                                  "Например: Аспирин, 0.1, Обезболивающее, 30, Принимать по одной таблетке в день")
-#     await EditMedicineStates.ENTER_DATA.set()
-# @dp.message_handler(state=EditMedicineStates.ENTER_DATA)
-# async def process_enter_data(message: types.Message, state: FSMContext):
-#     data = message.text.split(",")
-#     if len(data) == 5:
-#         name_med = data[0].strip()
-#         dosage_med = float(data[1].strip())
-#         category_name = data[2].strip()
-#         quantity_med = int(data[3].strip())
-#         instruction_name = data[4].strip()
-#         try:
-#             fl1 = dell_medic(name_med)
-#             fl = add_to_medic(name_med, dosage_med, category_name, quantity_med, instruction_name)
-#             if fl1 and fl:
-#                 await message.answer("Данные лекарства успешно изменены")
-#             else:
-#                 await message.answer("Не удалось изменить данные лекарства")
-#         except Exception as e:
-#             await message.answer(f"Произошла ошибка: {e}")
-#     else:
-#         await message.answer("Неверный формат данных. Введите данные в формате: Название, Дозировка, Категория, Количество, Инструкция")
-#     await state.finish()
-# class DeleteMedicineStates(StatesGroup):
-#     ENTER_NAME = State()
-# @dp.message_handler(filters.Text(contains='Удалить лишнее лекарство', ignore_case=True))
-# async def delete_medicine_callback(query: types.CallbackQuery):
-#     await query.reply(text="Введите название лекарства, которое вы хотите удалить:")
-#     await DeleteMedicineStates.ENTER_NAME.set()
-# @dp.message_handler(state=DeleteMedicineStates.ENTER_NAME)
-# async def process_enter_name(message: types.Message, state: FSMContext):
-#     name = message.text
-#     try:
-#         fl = dell_medic(name)
-#         if fl:
-#             await message.answer("Лекарство успешно удалено")
-#         else:
-#             await message.answer("Не удалось удалить лекарство")
-#     except Exception as e:
-#         await message.answer(f"Произошла ошибка: {e}")
-#     await state.finish()
+class EditMedicineStates(StatesGroup):
+    ENTER_NAME = State()
+    ENTER_DATA = State()
+@dp.message_handler(filters.Text(contains='Изменить лекарство', ignore_case=True))
+async def edit_medicine_callback(query: types.CallbackQuery):
+    await query.reply(text="Введите новые данные о лекарстве в следующем формате:\n"
+                                 "Название, Дозировка, Категория, Количество, Инструкция\n"
+                                 "Например: Аспирин, 0.1, Обезболивающее, 30, Принимать по одной таблетке в день")
+    await EditMedicineStates.ENTER_DATA.set()
+@dp.message_handler(state=EditMedicineStates.ENTER_DATA)
+async def process_enter_data(message: types.Message, state: FSMContext):
+    data = message.text.split(",")
+    if len(data) == 5:
+        name_med = data[0].strip()
+        dosage_med = float(data[1].strip())
+        category_name = data[2].strip()
+        quantity_med = int(data[3].strip())
+        instruction_name = data[4].strip()
+        try:
+            fl1 = dell_medic(name_med)
+            fl = add_to_medic(name_med, dosage_med, category_name, quantity_med, instruction_name)
+            if fl1 and fl:
+                await message.answer("Данные лекарства успешно изменены")
+            else:
+                await message.answer("Не удалось изменить данные лекарства")
+        except Exception as e:
+            await message.answer(f"Произошла ошибка: {e}")
+    else:
+        await message.answer("Неверный формат данных. Введите данные в формате: Название, Дозировка, Категория, Количество, Инструкция")
+    await state.finish()
+class DeleteMedicineStates(StatesGroup):
+    ENTER_NAME = State()
+@dp.message_handler(filters.Text(contains='Удалить лишнее лекарство', ignore_case=True))
+async def delete_medicine_callback(query: types.CallbackQuery):
+    await query.reply(text="Введите название лекарства, которое вы хотите удалить:")
+    await DeleteMedicineStates.ENTER_NAME.set()
+@dp.message_handler(state=DeleteMedicineStates.ENTER_NAME)
+async def process_enter_name(message: types.Message, state: FSMContext):
+    name = str(message.text)
+    try:
+        fl = dell_medic(name)
+        if fl:
+            await message.answer("Лекарство успешно удалено")
+        else:
+            await message.answer("Не удалось удалить лекарство")
+    except Exception as e:
+        await message.answer(f"Произошла ошибка: {e}")
+    await state.finish()
 
 @dp.message_handler(filters.Text(equals =['Поиск лекарства'], ignore_case=True))
 async def text_critmed(message: types.Message):
@@ -252,23 +252,7 @@ async def text_critmed(message: types.Message):
     keyboard = types.ReplyKeyboardMarkup(keyboard=kb, row_width=1)
     await message.answer("Выбери критерий", reply_markup=keyboard)
 
-# @dp.message_handler(filters.Text(equals =['По категориям'], ignore_case=True))
-# async def text_critmed(message: types.Message):
-#     try:
-#         categories = get_cat()
-#         categories_message = "Выберите номер категории из списка:\n"
-#         for category_number, category_name in categories.items():
-#             categories_message += f"{category_number}. {category_name}\n"
-#         await message.answer(categories_message)
-#         cat_id = await bot.send_message(message.chat.id)
-#         res = get_med_cat(cat_id)
-#         kb = [
-#             [types.KeyboardButton(text="Назад")]
-#         ]
-#         keyboard = types.ReplyKeyboardMarkup(keyboard=kb, row_width=1)
-#         await message.answer(str(res), reply_markup=keyboard)
-#     except Exception as e:
-#         await message.answer(f"Произошла ошибка: {e}")
+
 class CategoryMedicineStates(StatesGroup):
     ENTER_CATEGORY = State()
 @dp.message_handler(filters.Text(equals=['По категориям'], ignore_case=True))
