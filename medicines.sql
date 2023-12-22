@@ -51,14 +51,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION dell_medic(
-    name_med VARCHAR
-)
-
+CREATE OR REPLACE FUNCTION dell_medic(name_med VARCHAR)
 RETURNS BOOLEAN AS $$
-DECLARE
-    category_id INTEGER;
-    instruction_id INTEGER;
 BEGIN
     IF NOT EXISTS (SELECT med_id FROM medic.medicines WHERE name_medic = name_med) THEN
         RETURN FALSE;
